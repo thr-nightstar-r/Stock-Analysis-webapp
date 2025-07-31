@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StockSmart - Smart Stock Analysis for Students</title>
+    <meta name="description" content="Get real-time stock data, AI-powered insights, and professional charts - perfect for students learning about stock markets.">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Dark mode styles -->
+    <style>
+    body.dark-mode {
+        background: #181a1b !important;
+        color: #e2e8f0 !important;
+    }
+    body.dark-mode .navbar, body.dark-mode .footer, body.dark-mode .card {
+        background: #23272a !important;
+        color: #e2e8f0 !important;
+    }
+    body.dark-mode .btn, body.dark-mode .form-control, body.dark-mode .input-group-text {
+        background: #23272a !important;
+        color: #e2e8f0 !important;
+        border-color: #444 !important;
+    }
+    body.dark-mode .live-stock-card, body.dark-mode .feature-card, body.dark-mode .news-item {
+        background: #23272a !important;
+        color: #e2e8f0 !important;
+        border-color: #444 !important;
+    }
+    body.dark-mode .chart-card {
+        background: #23272a !important;
+        color: #e2e8f0 !important;
+    }
+    body.dark-mode .section-header, body.dark-mode .hero-title, body.dark-mode .hero-subtitle {
+        color: #e2e8f0 !important;
+    }
+    body.dark-mode .alert-danger {
+        background: #2c2f33 !important;
+        color: #ff6b6b !important;
+        border-color: #444 !important;
+    }
+    body.dark-mode .btn-outline-secondary {
+        border-color: #888 !important;
+        color: #e2e8f0 !important;
+    }
+    body.dark-mode .ai-content {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%) !important;
+        color: #e2e8f0 !important;
+    }
+    body.dark-mode .news-link {
+        color: #60a5fa !important;
+    }
+    body.dark-mode .news-link:hover {
+        color: #93c5fd !important;
+    }
+    </style>
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <i class="fas fa-chart-line text-primary me-2"></i>
+                StockSmart
+            </a>
+            <div class="navbar-nav ms-auto align-items-center">
+                <span class="navbar-text me-3 d-none d-md-block">
+                    <i class="fas fa-clock text-muted me-1"></i>
+                    <span id="currentTime"></span>
+                </span>
+                <button id="darkModeToggle" class="btn btn-outline-secondary btn-sm" title="Toggle dark mode">
+                    <i class="fas fa-moon"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h1 class="hero-title">Smart Stock Analysis for Students</h1>
+                    <p class="hero-subtitle">Get real-time stock data, AI-powered insights, and professional charts - all in one place!</p>
+                    
+                    <!-- Search Form -->
+                    <div class="search-container">
+                        <form id="stockForm" class="search-form">
+                            <div class="input-group">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                                <input type="text" id="stockSymbol" class="form-control" 
+                                       placeholder="Enter company name or symbol (e.g., Apple, TSLA, RELIANCE)" 
+                                       autocomplete="off" required>
+                                <button class="btn btn-primary" type="submit" id="searchBtn">
+                                    <i class="fas fa-chart-bar me-2"></i>Analyze
+                                </button>
+                            </div>
+                        </form>
+                        <div class="search-tips mt-3">
+                            <small class="text-white-50">
+                                <i class="fas fa-lightbulb me-1"></i>
+                                Try: AAPL, MSFT, GOOGL, AMZN, TSLA, or any stock symbol
+                            </small>
+                            <div class="mt-2">
+                                <button type="button" class="btn btn-outline-light btn-sm" onclick="testChartFunctionality()">
+                                    <i class="fas fa-chart-line me-1"></i>Test Chart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Live Market Overview -->
+    <section class="market-overview">
+        <div class="container">
+            <div class="section-header">
+                <h2><i class="fas fa-fire text-danger me-2"></i>Live Market Overview</h2>
+                <p class="text-muted">Real-time data for popular stocks</p>
+            </div>
+            <div class="row" id="liveScreener">
+                <!-- Live stock cards will be loaded here -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Loading & Status Section -->
+    <div id="statusSection" class="status-section"></div>
+
+    <!-- Results Section -->
+    <section id="results" class="results-section d-none">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Stock Info Card -->
+                <div class="col-lg-4">
+                    <div class="card stock-info-card">
+                        <div class="card-body">
+                            <div class="stock-header">
+                                <h3 id="stockName" class="stock-title"></h3>
+                                <div id="stockInfo" class="stock-details">
+                                    <!-- News items will be loaded here -->
+                                </div>
+                            </div>
+                            
+                            <!-- AI Analysis -->
+                            <div class="ai-analysis-section">
+                                <h4 class="ai-title">
+                                    <i class="fas fa-robot text-primary me-2"></i>AI Analysis
+                                </h4>
+                                <div id="aiSuggestion" class="ai-content">
+                                    <div class="text-center">
+                                        <div class="spinner-border spinner-border-sm text-primary" role="status"></div>
+                                        <small class="text-muted">Generating AI insights...</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chart Section -->
+                <div class="col-lg-8">
+                    <div class="card chart-card">
+                        <div class="card-body">
+                            <div class="chart-header">
+                                <h4 class="chart-title">
+                                    <i class="fas fa-chart-area me-2"></i>Price Chart (90 Days)
+                                </h4>
+                                <div class="chart-controls">
+                                    <button class="btn btn-sm btn-outline-primary" onclick="changeTimeframe('1M')">1M</button>
+                                    <button class="btn btn-sm btn-outline-primary active" onclick="changeTimeframe('3M')">3M</button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="changeTimeframe('6M')">6M</button>
+                                    <button class="btn btn-sm btn-outline-primary" onclick="changeTimeframe('1Y')">1Y</button>
+                                </div>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="stockChart"></canvas>
+                            </div>
+                            <div class="chart-footer mt-3">
+                                <small class="text-muted">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    Data updates every 30 seconds. Chart shows closing prices.
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section">
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>Why Choose StockSmart?</h2>
+                <p class="text-muted">Perfect for students learning about stock markets</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h4>AI-Powered Insights</h4>
+                        <p>Get intelligent analysis and suggestions for any stock using advanced AI technology.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>Real-Time Data</h4>
+                        <p>Access live market data, price charts, and technical indicators for informed decisions.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h4>Student-Friendly</h4>
+                        <p>Simple interface designed specifically for students learning about stock markets.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-newspaper"></i>
+                        </div>
+                        <h4>Latest News</h4>
+                        <p>Stay updated with the latest news and developments affecting your stocks.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-mobile-alt"></i>
+                        </div>
+                        <h4>Mobile Responsive</h4>
+                        <p>Works perfectly on all devices - desktop, tablet, and mobile phones.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="feature-card text-center">
+                        <div class="feature-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Safe & Secure</h4>
+                        <p>No personal data collection. Your searches and analysis remain private.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- How to Use Section -->
+    <section class="how-to-use-section" >
+        <div class="container">
+            <div class="section-header text-center">
+                <h2>How to Use StockSmart</h2>
+                <p class="text-muted">Simple steps to get started</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="step-card text-center">
+                        <div class="step-number">1</div>
+                        <h5>Enter Symbol</h5>
+                        <p>Type a stock symbol or company name in the search box</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="step-card text-center">
+                        <div class="step-number">2</div>
+                        <h5>Get Analysis</h5>
+                        <p>View real-time price data and AI-powered insights</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="step-card text-center">
+                        <div class="step-number">3</div>
+                        <h5>Read News</h5>
+                        <p>Browse latest news articles related to the stock</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="step-card text-center">
+                        <div class="step-number">4</div>
+                        <h5>Learn & Grow</h5>
+                        <p>Use the insights to understand market trends</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5><i class="fas fa-chart-line text-primary me-2"></i>StockSmart</h5>
+                    <p class="text-white">Your trusted companion for stock market analysis and learning.</p>
+                    <div class="social-links mt-3">
+                        <a href="https://github.com/thr-nightstar-r/" class="text-muted me-3" title="GitHub">
+                            <i class="fab fa-github fa-2x" style="color: #333333;"></i>
+                        </a>
+                        <a href="https://instagram.com/the_nightstar_r/" class="text-muted me-3" title="Instagram">
+                            <i class="fab fa-instagram fa-2x" style="color: #ac2bac;"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/raj-verma-398465324/" class="text-muted" title="LinkedIn">
+                            <i class="fab fa-linkedin-in fa-2x" style="color: #0082ca;"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p class="text-white">
+                        <strong>Disclaimer:</strong> This tool is for educational purposes only. 
+                        Not financial advice. Always do your own research.
+                    </p>
+                    <p class="text-white small mt-2">
+                        Data provided by Finnhub and Google Gemini AI. 
+                        Real-time updates every 30 seconds.
+                    </p>
+                </div>
+            </div>
+            <hr class="my-4">
+            <div class="row">
+                <div class="col-12 text-center">
+                    <p class="text-muted small mb-0">
+                        &copy; 2025 StockSmart. Made by The Nightstar.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
