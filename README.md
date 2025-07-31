@@ -273,8 +273,7 @@ This application is designed for educational and learning purposes. It is not in
 ## 🤝 Support & Community
 
 ### Getting Help
-- 📧 **Email**: [Your Email]
-- 💬 **Issues**: Create an issue on GitHub
+- 📧 **Email**: [rajv122554@gmail.com]
 - 📖 **Documentation**: Check this README first
 
 ### Contributing
@@ -291,7 +290,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 
 <div align="center">
 
-**Made with ❤️ for students learning about stock markets**
+**Made with ❤️ by The Nightstar**
 
 [⬆️ Back to Top](#-stocksmart---smart-stock-analysis-for-students)
 
